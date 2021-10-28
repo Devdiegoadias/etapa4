@@ -70,6 +70,51 @@ namespace etapa4
         {
             try
             {
+                var lstNome = new List<string>();
+                string nome = string.Empty;
+
+                lstNome.Add("Diego A. Dias");
+                lstNome.Add("Mateus Oliveira");
+                lstNome.Add("Leonardo da Silva Xavier");
+
+
+                foreach (var var in lstNome)
+                {
+                    if (var.Contains("Leo"))
+                    {
+                        nome = var;
+                    }
+                }
+
+                DateTime nascimentoMateus = new DateTime(2001, 01, 22);
+
+                DateTime niverMateus = DateTime.Now; //new DateTime(DateTime.Now.Year, 01, 22);
+                DateTime proxNiverMateus = new DateTime(DateTime.Now.Year + 1, 01, 22);
+
+                TimeSpan t = proxNiverMateus.Subtract(niverMateus);
+
+                Console.WriteLine("Falta " + t.Days.ToString() + " dias para o aniversário do Mateus");
+
+                Console.WriteLine("O nome é " + nome);
+
+                string condicao = string.Empty;
+
+                //Menu
+                switch (condicao)
+                {
+                    case "caso1":
+                        // Se a condicao for igual ao caso1 executamos esse trecho de código entre o case e o break
+                        break;
+                    case "caso2":
+                        // Se a condicao for igual ao caso2 executamos esse trecho de código entre o case e o break
+                        break;
+                    default:
+                        // Se a condicao diferente de todos os casos acima executamos esse trecho de código
+                        break;
+                }
+
+
+
                 int sum1 = 10;
                 int sum2 = 10;
 
@@ -88,7 +133,7 @@ namespace etapa4
                     Console.WriteLine("não pagar comissao");
 
 
-                          //V         //V
+                //V         //V
                 if (vSoma >= 20 || vSoma2 == 40)
                 {
                     Console.WriteLine(">= que 20");
@@ -138,6 +183,55 @@ namespace etapa4
                     Console.WriteLine(c.Nome);
                     Console.WriteLine(c.CPF);
                     Console.WriteLine(c.Matricula);
+                }
+
+                ///Continuação ETAPA 4 
+                ///
+
+                // Array com valor nulo
+                int[] primeiroArray;
+
+                // Array instanciado com tamanho 3
+                int[] segundoArray = new int[3];
+
+                // Array inicializado com 3 elementos
+                int[] terceiroArray = new int[] { 1, 2, 3 };
+
+                // Array inicializado com 4 elementos do tipo string
+                string[] quartoArray = new string[] { "a", "b", "c", "d" };
+
+                Console.WriteLine(quartoArray[0] + quartoArray[1] + quartoArray[2] + quartoArray[3]);
+
+
+
+                List<int> meuList = new List<int>();
+
+                meuList.Add(1); //0
+                meuList.Add(2); //1
+                meuList.Add(3); //2
+                meuList.Add(4);
+                meuList.Add(5);
+                meuList.Add(99);
+
+                var numeros = new List<string>() { "Um", "Dois", "Três" };
+
+                foreach (var numero in numeros)
+                {
+                    // Imprime no console cada um dos numeros do List
+                    Console.WriteLine(numero);
+                }
+
+                var k = 10;
+                while (k > 0)
+                {
+                    Console.WriteLine(k);
+
+                    if (k == 5) //== significa 'igual'
+                    {
+                        break;
+                    }
+
+                    k--; //k=k-1
                 }
 
             }
