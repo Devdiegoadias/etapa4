@@ -4,86 +4,91 @@ using System.Collections.Generic;
 
 namespace etapa4
 {
+    public class InfnetNegocioException : Exception
+    {
+        public InfnetNegocioException(string mensagem):base(mensagem)
+        {
+            
+        }
+    }
+
     public abstract class Veiculo
     {
-        private bool _automatico;
         private string _combustivel;
-
-        public void ColocarCombustível()
-        {
-            Console.WriteLine("Basta colocar combustivel necessário");
-        }
-
-        #region Propriedades Veiculo        
-        
-        public bool Automatico
-        {
-            get
-            {
-                return _automatico;
-            }
-            set
-            {
-                _automatico = value;
-            }
-        }
+        private string _modelo;
+        private string _identificacao;
 
         public string Combustivel
         {
-            get
-            {
-                return _combustivel;
-            }
-            set
-            {
-                _combustivel = value;
-            }
+            get { return _combustivel; }
+            set { _combustivel = value; }
         }
-        #endregion
 
-        public Veiculo()
+        public string Modelo
         {
-            Console.WriteLine("Eu sou um veículo");
+            get { return _modelo; }
+            set { _modelo = value; }
         }
 
-        public abstract void Acelerar();
-        public abstract void Freiar();
+        public string Identificacao
+        {
+            get { return _identificacao; }
+            set { _identificacao = value; }
+        }
+
+        public string Descricao()
+        {
+            return "Sou da classe Veiculo";
+        }
+
     }
 
-    public class Aviao : Veiculo
+    public class helicoptero : Veiculo
     {
-        public Aviao()
+        private int _quantidadeHelice;
+
+        public string Descricao()
         {
-            Console.WriteLine("Eu sou um avião.");
+            return "Sou da classe Helicoptero";
         }
 
-        public override void Acelerar()
-        {
-                
-        }
+        #region Propriedades Helicoptero
 
-        public override void Freiar()
+        public int QuantidadeHelice
         {
-
+            get { return _quantidadeHelice; }
+            set { _quantidadeHelice = value; }
         }
+        #endregion
+    }
+
+    public class Jato : Veiculo
+    {
+        private int _quantidadeTurbina;
+       
+
+        #region Propriedades Jato
+
+        public int QuantidadeTurbina
+        {
+            get { return _quantidadeTurbina; }
+            set { _quantidadeTurbina = value; }
+        }
+        #endregion
     }
 
     public class Carro : Veiculo
     {
-        public Carro()
+        private string _placa;
+
+        #region Propriedades carro
+
+        public string Placa
         {
-            Console.WriteLine("Eu sou um carro.");
+            get { return _placa; }
+            set { _placa = value; }
         }
-
-        public override void Acelerar()
-        {
-
-        }
-
-        public override void Freiar()
-        {
-
-        }
+        #endregion
     }
 
     public class Colaborador
@@ -92,25 +97,21 @@ namespace etapa4
         private string _nome;
         private string _cpf;
         private bool _ativo;
+        private int _nivel;
         private Veiculo _veiculo;
 
-        //Não é preciso declarar 
-        public Colaborador()
-        {
 
-        }
-
-        public Colaborador(int matricula, string nome, string cpf, bool ativo, Veiculo veiculo)
+        public Colaborador(int matricula, string nome, string cpf, bool ativo, int nivel)
         {
             _matricula = matricula;
             _nome = nome;
             _cpf = cpf;
             _ativo = ativo;
-            _veiculo = veiculo;
+            _nivel = nivel; // 1, 2 e 3
         }
 
-        //Usando propriedades, Getter e Setter
         #region Propriedades Colaborador
+
         public int Matricula
         {
             get
@@ -149,27 +150,29 @@ namespace etapa4
 
         public bool Ativo
         {
-            get
-            {
-                return _ativo;
-            }
-            set
-            {
-                _ativo = value;
-            }
+            get { return _ativo; }
+            set { _ativo = value; }
         }
 
         public Veiculo Veiculo
         {
-            get
-            {
-                return _veiculo;
-            }
-            set
-            {
-                _veiculo = value;
+            get { return _veiculo; }
+            set 
+            { 
+                if(this.Nivel == 3 && value.GetType() != typeof(Jato))
+                {
+                    throw new InfnetNegocioException("Nivel 3 só pode usar jato.");
+                }
+                _veiculo = value; 
             }
         }
+
+        public int Nivel
+        {
+            get { return _nivel; }
+            set { _nivel = value; }
+        }
+
         #endregion
 
         public decimal Comissao(decimal salarioColaborador, int percentagem)
@@ -184,13 +187,32 @@ namespace etapa4
         {
             try
             {
-                Aviao a = new Aviao();               
-                
-                
+                var lstNome = new List<string>();
+                string nome = string.Empty;
+
+                lstNome.Add("Diego A. Dias");
+                lstNome.Add("Mateus Oliveira");
+                lstNome.Add("Leonardo da Silva Xavier");
+
                 var listaColaboradores = new ArrayList();
-                Colaborador c1 = new Colaborador(111, "aaaa", "cpf1", false, new Carro());
-                Colaborador c2 = new Colaborador(222, "bbb", "cpf2", false, new Carro());
-                Colaborador c3 = new Colaborador(333, "ccc", "cpf3", false, new Aviao());
+
+                /*
+                 Área de produtos, solicitação Gerente josé, card 8892783 
+                 Conforme a regra de negócio RN78, o funcionario que for nivel 3 pode só escolher jato; 
+                */
+
+                Colaborador c1 = new Colaborador(111, "Diego A. Dias", "cpf1", false, 3);
+                Colaborador c2 = new Colaborador(222, "Mateus Oliveira", "cpf2", false, 2);
+                Colaborador c3 = new Colaborador(333, "Leonardo da Silva Xavier", "cpf3", false, 1);
+
+                c1.Veiculo = new helicoptero();
+                Console.WriteLine(c1.Veiculo.Descricao());
+
+                c1.Veiculo = new Carro();
+                Console.WriteLine(c1.Veiculo.Descricao());
+
+                c1.Veiculo = new Jato();
+                Console.WriteLine(c1.Veiculo.Descricao());
 
                 listaColaboradores.Add(c1);
                 listaColaboradores.Add(c2);
@@ -201,20 +223,13 @@ namespace etapa4
                 foreach (Colaborador c in listaColaboradores)
                 {
                     lC.Add(c);
+
                     Console.WriteLine(c.Nome);
                     Console.WriteLine(c.CPF);
                     Console.WriteLine(c.Matricula);
-                    Console.WriteLine(c.Veiculo);
                 }
 
-                //Exemplo de Varrendo o nome;
-                var lstNome = new List<string>();
-                string nome = string.Empty;
-
-                lstNome.Add("Diego A. Dias");
-                lstNome.Add("Mateus Oliveira");
-                lstNome.Add("Leonardo da Silva Xavier");
-
+                //pesquisando por nome
                 foreach (var var in lstNome)
                 {
                     if (var.Contains("Leo"))
@@ -223,14 +238,13 @@ namespace etapa4
                     }
                 }
 
-                //Exemplo calculando dias faltantes;
+                //Diminuir 'tempo', subtrair datas
                 DateTime nascimentoMateus = new DateTime(2001, 01, 22);
                 DateTime niverMateus = DateTime.Now; //new DateTime(DateTime.Now.Year, 01, 22);
                 DateTime proxNiverMateus = new DateTime(DateTime.Now.Year + 1, 01, 22);
                 TimeSpan t = proxNiverMateus.Subtract(niverMateus);
 
                 Console.WriteLine("Falta " + t.Days.ToString() + " dias para o aniversário do Mateus");
-
                 Console.WriteLine("O nome é " + nome);
 
                 string condicao = string.Empty;
@@ -254,8 +268,7 @@ namespace etapa4
                 int vSoma = sum1 + sum2;
                 int vSoma2 = vSoma * 1;
 
-                //Operadores
-                //&& - AND
+                // && - AND
                 // || - OR
                 //  ! - Negação
 
@@ -266,7 +279,7 @@ namespace etapa4
                 else
                     Console.WriteLine("não pagar comissao");
 
-                          //V         //V
+                //V         //V
                 if (vSoma >= 20 || vSoma2 == 40)
                 {
                     Console.WriteLine(">= que 20");
@@ -279,6 +292,7 @@ namespace etapa4
                 }
 
                 // % mod - Pega resto de divisão
+
                 int j;
 
                 for (int i = 1; i <= 10; i++)
@@ -287,10 +301,8 @@ namespace etapa4
 
                     Console.WriteLine("j ->" + j);
                     Console.WriteLine("**********************");
-                    Console.WriteLine("multiplicando Sum1 * i (" + i + ")" + sum1 * i);
+                    //Console.WriteLine("multiplicando Sum1 * i (" + i + ")" + sum1 * i);
                 }
-
-                ///Continuação ETAPA 4                 
 
                 // Array instanciado com tamanho 3
                 int[] segundoArray = new int[3];
@@ -307,10 +319,7 @@ namespace etapa4
 
                 meuList.Add(1); //0
                 meuList.Add(2); //1
-                meuList.Add(3); //2
-                meuList.Add(4);
-                meuList.Add(5);
-                meuList.Add(99);
+                meuList.Add(3); //2                
 
                 var numeros = new List<string>() { "Um", "Dois", "Três" };
 
@@ -333,6 +342,10 @@ namespace etapa4
                     k--; //k=k-1
                 }
 
+            }
+            catch (InfnetNegocioException ex)
+            {
+                throw new Exception("RN78 " + ex.Message);
             }
             catch (Exception ex)
             {
